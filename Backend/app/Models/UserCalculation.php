@@ -6,5 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class UserCalculation extends Model
 {
-    //
+    use HasFactory;
+    protected $fillable = ['full_name', 'calculation_result'];
 }
