@@ -72,7 +72,13 @@ class UserCalculationController extends Controller
         ]);
 
         $userCalculation = UserCalculation::findOrFail($id);
-        $userCalculation->update(['full_name' => $request->full_name]); // Only update name
+        // Recalculate result based on new name
+        $cleanName = strtoupper(preg_replace('/[^A-Z]/i', '', $request->full_name));
+        $result = collect(str_split($cleanName))->sum(fn($char) => ord($char) - 64);
+        $userCalculation->update([
+            'full_name' => $request->full_name,
+            'calculation_result' => $result
+        ]);
 
         return response()->json($userCalculation);
     }
