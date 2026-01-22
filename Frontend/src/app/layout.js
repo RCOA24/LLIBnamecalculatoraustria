@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Calculative | Enterprise Name Value Calculator",
+  title: "Calculative - Name Value Calculator",
   description: "Determine the numerical value of any name using our deterministic alphabet algorithm.",
 };
 
