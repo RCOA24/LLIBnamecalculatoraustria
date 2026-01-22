@@ -3,7 +3,9 @@ import { useState, useEffect } from 'react';
 import { userService } from '@/services/userService';
 import CalculatorForm from '@/components/CalculatorForm';
 import UserList from '@/components/UserList';
-import { Toaster } from 'react-hot-toast';
+import { Toaster } from 'react-hot-toast'; // Import Toaster
+import { ThemeToggle } from '@/components/ThemeToggle';
+import { LayoutDashboard } from 'lucide-react';
 
 export default function Home() {
   const [users, setUsers] = useState([]);
@@ -25,38 +27,49 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50/50 font-sans text-gray-900 pb-20">
-      <div className="fixed top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 z-50"></div>
-      
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 pt-16 space-y-12">
-        <div className="text-center space-y-4">
-            <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900">
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">
+    <div className="min-h-screen bg-background font-sans text-foreground transition-colors duration-300">
+        {/* Header */}
+        <header className="sticky top-0 z-40 w-full border-b border-stone-200 dark:border-slate-800 bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+            <div className="container max-w-5xl mx-auto flex h-16 items-center justify-between px-4">
+                <div className="flex items-center gap-2 font-bold text-xl tracking-tight text-foreground">
+                    <div className="p-1.5 bg-slate-900 dark:bg-indigo-500 rounded-md text-white">
+                        <LayoutDashboard className="w-5 h-5" />
+                    </div>
                     Calculative
-                </span>
-            </h1>
-            <p className="max-w-xl mx-auto text-lg text-gray-500">
-                Determine the numerical value of any name using our deterministic alphabet algorithm.
-            </p>
-        </div>
+                </div>
+                <ThemeToggle />
+            </div>
+        </header>
 
-        <section className="animate-in fade-in slide-in-from-bottom-4 duration-700">
+      <main className="container max-w-5xl mx-auto px-4 py-8 md:py-10 space-y-10">
+        
+        {/* Hero / Input Section */}
+        <section className="space-y-6">
+             <div className="max-w-2xl">
+                <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl mb-2">
+                    Dashboard
+                </h1>
+                <p className="text-lg text-slate-500 dark:text-slate-400">
+                    Manage users and calculate name values efficiently.
+                </p>
+            </div>
              <CalculatorForm onUserAdded={fetchUsers} />
         </section>
 
-        <section className="space-y-6 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-150">
-            <div className="flex items-center justify-between px-2">
-                <h2 className="text-xl font-bold text-gray-800">Recent Calculations</h2>
-                <span className="text-sm font-medium text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
-                    {users.length} Records
+        {/* Data Section */}
+        <section className="space-y-4">
+            <div className="flex items-center justify-between">
+                <h2 className="text-lg font-semibold text-foreground">Registered Users</h2>
+                 <span className="inline-flex items-center rounded-md bg-slate-100 dark:bg-slate-800 px-2.5 py-0.5 text-sm font-medium text-slate-800 dark:text-slate-200">
+                    {users.length} Total
                 </span>
             </div>
             
             {loading ? (
-                <div className="space-y-4">
-                    {[1,2,3].map(i => (
-                        <div key={i} className="h-16 bg-white rounded-xl shadow-sm animate-pulse"></div>
-                    ))}
+                <div className="w-full bg-card rounded-xl border border-border p-8 space-y-4">
+                     {[1,2,3,4].map(i => (
+                         <div key={i} className="h-10 bg-slate-100 dark:bg-slate-800 rounded-md animate-pulse w-full"></div>
+                     ))}
                 </div>
             ) : (
                 <UserList users={users} onRefresh={fetchUsers} />
@@ -64,19 +77,18 @@ export default function Home() {
         </section>
       </main>
 
-      {/* Global Toast Provider */}
       <Toaster 
         position="bottom-right"
-        toastOptions={{
-            duration: 4000,
+         toastOptions={{
             style: {
-                background: '#333',
+                background: '#1e293b',
                 color: '#fff',
-                borderRadius: '8px',
+                fontSize: '14px',
+                padding: '12px 20px',
             },
             success: {
                 style: {
-                    background: '#10B981',
+                    background: '#10B981', 
                 },
                 iconTheme: {
                     primary: '#fff',
@@ -84,11 +96,11 @@ export default function Home() {
                 },
             },
             error: {
-                style: {
-                    background: '#EF4444',
+               style: {
+                    background: '#EF4444', 
                 },
-            },
-        }}
+            }
+         }}
       />
     </div>
   );
