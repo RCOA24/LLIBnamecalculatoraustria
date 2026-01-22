@@ -10,14 +10,17 @@ class CalculationSeeder extends Seeder
 {
     public function run()
     {
-        UserCalculation::create([
-            'full_name' => 'John Doe',
-            'calculation_result' => 45 // Random dummy value
-        ]);
+        $users = ['John Doe', 'Jane Smith', 'Alice Wonderland'];
         
-        UserCalculation::create([
-            'full_name' => 'Jane Smith',
-            'calculation_result' => 90
-        ]);
+        foreach ($users as $name) {
+            // Replicate the controller logic for consistency
+            $cleanName = strtoupper(preg_replace('/[^A-Z]/i', '', $name));
+            $result = collect(str_split($cleanName))->sum(fn($char) => ord($char) - 64);
+
+            UserCalculation::create([
+                'full_name' => $name,
+                'calculation_result' => $result
+            ]);
+        }
     }
 }

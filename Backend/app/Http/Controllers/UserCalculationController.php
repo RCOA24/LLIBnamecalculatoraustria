@@ -29,13 +29,14 @@ class UserCalculationController extends Controller
      */
     public function store(Request $request)
     {
-        //
         $request->validate([
-            'full_name' => 'required|regex:/^[a-zA-Z\s]+$/' // Validation: Alphabets only
+            'full_name' => 'required|regex:/^[a-zA-Z\s]+$/'
         ]);
 
-        // THE CALCULATOR LOGIC (Example: Length of name * random number)
-        $result = strlen(str_replace(' ', '', $request->full_name)) * rand(1, 100);
+        // Deterministic Calculation: Sum of alphabet positions (A=1, B=2...)
+        // Remove spaces, uppercase, convert to arrays
+        $cleanName = strtoupper(preg_replace('/[^A-Z]/i', '', $request->full_name));
+        $result = collect(str_split($cleanName))->sum(fn($char) => ord($char) - 64);
 
         $data = UserCalculation::create([
             'full_name' => $request->full_name,
@@ -50,7 +51,7 @@ class UserCalculationController extends Controller
      */
     public function show(UserCalculation $userCalculation)
     {
-        //
+        return response()->json($userCalculation);
     }
 
     /**
@@ -64,26 +65,25 @@ class UserCalculationController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, UserCalculation $userCalculation)
+    public function update(Request $request, string $id)
     {
-        //
         $request->validate([
             'full_name' => 'required|regex:/^[a-zA-Z\s]+$/'
         ]);
 
-        $user = UserCalculation::findOrFail($id);
-        $user->update(['full_name' => $request->full_name]); // Only update name
+        $userCalculation = UserCalculation::findOrFail($id);
+        $userCalculation->update(['full_name' => $request->full_name]); // Only update name
 
-        return response()->json($user);
+        return response()->json($userCalculation);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(UserCalculation $userCalculation)
+    public function destroy(string $id)
     {
-        //
-        UserCalculation::destroy($id);
+        $userCalculation = UserCalculation::findOrFail($id);
+        $userCalculation->delete();
         return response()->json(null, 204);
     }
 }
