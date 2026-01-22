@@ -13,6 +13,7 @@ class UserCalculationController extends Controller
     public function index()
     {
         //
+        return response()->json(UserCalculation::latest()->get());
     }
 
     /**
@@ -29,6 +30,19 @@ class UserCalculationController extends Controller
     public function store(Request $request)
     {
         //
+        $request->validate([
+            'full_name' => 'required|regex:/^[a-zA-Z\s]+$/' // Validation: Alphabets only
+        ]);
+
+        // THE CALCULATOR LOGIC (Example: Length of name * random number)
+        $result = strlen(str_replace(' ', '', $request->full_name)) * rand(1, 100);
+
+        $data = UserCalculation::create([
+            'full_name' => $request->full_name,
+            'calculation_result' => $result
+        ]);
+
+        return response()->json($data, 201);
     }
 
     /**
@@ -53,6 +67,14 @@ class UserCalculationController extends Controller
     public function update(Request $request, UserCalculation $userCalculation)
     {
         //
+        $request->validate([
+            'full_name' => 'required|regex:/^[a-zA-Z\s]+$/'
+        ]);
+
+        $user = UserCalculation::findOrFail($id);
+        $user->update(['full_name' => $request->full_name]); // Only update name
+
+        return response()->json($user);
     }
 
     /**
@@ -61,5 +83,7 @@ class UserCalculationController extends Controller
     public function destroy(UserCalculation $userCalculation)
     {
         //
+        UserCalculation::destroy($id);
+        return response()->json(null, 204);
     }
 }
